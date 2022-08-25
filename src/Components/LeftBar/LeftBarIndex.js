@@ -1,72 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 
-const LeftBarIndex = () => {
-	const movieOptions = [
-		{
-			title: "Star Wars 1",
-			year: "1977",
-			id: 1,
-			picture: "beautiful Picture 1",
-		},
-		{
-			title: "Star Wars 2",
-			year: "1987",
-			id: 2,
-			picture: "beautiful Picture 2",
-		},
-		{
-			title: "Star Wars 3",
-			year: "2009",
-			id: 3,
-			picture: "beautiful Picture 3",
-		},
-		{
-			title: "Star Wars 4",
-			year: "1990",
-			id: 4,
-			picture: "beautiful Picture 4",
-		},
-		{
-			title: "Star Wars 5",
-			year: "2015",
-			id: 5,
-			picture: "beautiful Picture 5",
-		},
-		{
-			title: "Star Wars 6",
-			year: "2018",
-			id: 6,
-			picture: "beautiful Picture 6",
-		},
-	];
+//this creates the navigation on movie list on the LHS
+const LeftBarIndex = ({ movieList, selectedMovie }) => {
+	const [movieSelected, setMovieSelected] = useState();
+
+	//This function set the state to the movie selected and also does a callback to the parent component
+	//sending it the movie info it needs to be diaplyed on the LHS
+	const selectMovie = (movie) => {
+		selectedMovie(movie);
+		setMovieSelected(movie);
+	};
 
 	const renderMovieOptions = () => {
 		return (
 			<div>
-				{movieOptions.map((movie) => (
-					<div className="border-b border-lightGray flex p-20">
-						<img src="" alt={movie.picture} width="20" height="20" />
-						<div className="pl-20 flex flex-col h-full">
-							<div className="text-18">{movie.title}</div>
-							<div className="text-14">{movie.year}</div>
+				{movieList.Search &&
+					movieList.Search?.map((movie) => (
+						<div
+							className={`border-b border-lightGray flex p-20 hover:bg-textGray ${
+								movieSelected?.imdbID === movie?.imdbID ? "bg-textGray" : null
+							}`}
+							key={movie.imdbID}
+							onClick={() => selectMovie(movie)}
+						>
+							<img src={movie.Poster} alt={movie.Type} width="70" />
+							<div className="pl-20 flex flex-col h-max">
+								<span className="text-18">{movie.Title}</span>
+								<span className="text-14">{movie.Year}</span>
+							</div>
 						</div>
-					</div>
-				))}
+					))}
 			</div>
 		);
 	};
 
-	return (
+	return movieList?.Search?.length > 0 ? (
 		<div
-			className="overflow-scroll w-full h-full border-r border-lightGray"
+			className="overflow-scroll w-full border-r border-lightGray focus-within:shadow-lg"
 			style={{
 				maxWidth: "30%",
+				maxHeight: "100vh",
 			}}
 		>
-			<div className="p-30">582 RESULTS</div>
+			<div className="p-30">{`${
+				movieList?.Search ? movieList.Search.length : 0
+			} RESULTS`}</div>
 			{renderMovieOptions()}
 		</div>
-	);
+	) : null;
 };
 
 export default LeftBarIndex;
